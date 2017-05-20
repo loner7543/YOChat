@@ -10,6 +10,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<script type="text/javascript" src="js/network.js"></script>
 
 <dom-module id="my-view2">
   <template>
@@ -22,16 +25,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
 
     <div class="card">
-      <div class="circle">2</div>
-      <h1>View Two</h1>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
-    </div>
+      <paper-fab style="color:#00c853;" id="add" label="Yo!" on-click="loadFile"></paper-fab></div>
   </template>
 
   <script>
     Polymer({
       is: 'my-view2',
+        properties:{
+            user:{
+                type:Object,
+                value(){
+                    return {
+                        name:"",
+                        server:""
+                    }
+                }
+            },
+            last:{
+                type:Number,
+                value: +new Date()
+            },
+            items:{
+                type:Array,
+                value(){
+                    return [];
+                },
+                notify:true,
+            },
+        },
+        loadFile:function (e) {
+            console.log(e);
+            console.log("send data.....")
+            var data = {
+                mes:"lala",
+                date:"112"
+            }
+            sendMessaage(data);
+//            var data = getAll("http://localhost:8085/api/msg?from="+this.last);
+//            console.log(data);
+        }
     });
   </script>
 </dom-module>
