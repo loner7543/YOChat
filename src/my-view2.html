@@ -7,7 +7,19 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-
+<script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
+<script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyD7DL-pSHSivgS-HYEYRs_IUjYcDAnXxwg",
+        authDomain: "yochat-aa55e.firebaseapp.com",
+        databaseURL: "https://yochat-aa55e.firebaseio.com",
+        projectId: "yochat-aa55e",
+        storageBucket: "yochat-aa55e.appspot.com",
+        messagingSenderId: "452198832439"
+    };
+    firebase.initializeApp(config);
+</script>
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
@@ -25,7 +37,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
 
     <div class="card">
-      <paper-fab style="color:#00c853;" id="add" label="Yo!" on-click="loadFile"></paper-fab></div>
+      <paper-fab style="color:#00c853;" id="add" label="Yo!" on-click="getData"></paper-fab></div>
+    <!--<template is="dom-repeat" items="{{items}}">-->
+      <!--<div class="txt">-->
+        <!--<span class="time">{{getDate(index)}}</span> <b style$="[[getColor(index)]]">{{getName(index)}}</b>:Yo!-->
+      <!--</div>-->
+    <!--</template>-->
+    <paper-button label="get" on-click="getData"></paper-button>
   </template>
 
   <script>
@@ -60,10 +78,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 mes:"lala",
                 date:"112"
             }
-            sendMessaage(data);
+            sendMessaage(data,"ws://"+host+":"+serverPort+"/ws");
 //            var data = getAll("http://localhost:8085/api/msg?from="+this.last);
 //            console.log(data);
+        },
+        getData:function (e) {
+          var db = firebase.database().ref().child("Messages");
+            db.once("value")
+                .then(function(snapshot) {
+                    var cond = snapshot.hasChildren();//lima
+                    if (cond){
+                        var date = snapshot.child("mes1").child("date").val(); // {first:"Ada",last:"Lovelace"}
+                        var user = snapshot.child("mes1").child("user").val(); // "Lovelace"
+                    }
+                });
+          var a = 5;
+           // sendMessaage(null,"ws://"+host+":"+serverPort+"/api/msg?from="+this.last);
         }
+
     });
   </script>
 </dom-module>

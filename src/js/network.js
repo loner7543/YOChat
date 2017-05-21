@@ -16,9 +16,9 @@ function getAll(url){
 
 }
 
-function sendMessaage(data){
+function sendMessaage(data,url){
     if(serverSocket==undefined){
-        serverSocket = new WebSocket("ws://"+host+":"+serverPort+"/ws");
+        serverSocket = new WebSocket(url);
         serverSocket.onopen = function() {
             console.log("Соединение установлено.");
         };
@@ -43,5 +43,5 @@ function sendMessaage(data){
         };
         console.log(data);
     }
-    serverSocket.send(data);
+  //  serverSocket.send(data);
 }
