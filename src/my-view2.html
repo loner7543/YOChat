@@ -38,11 +38,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="card">
       <paper-fab style="color:#00c853;" id="add" label="Yo!" on-click="getData"></paper-fab></div>
-    <!--<template is="dom-repeat" items="{{items}}">-->
-      <!--<div class="txt">-->
-        <!--<span class="time">{{getDate(index)}}</span> <b style$="[[getColor(index)]]">{{getName(index)}}</b>:Yo!-->
-      <!--</div>-->
-    <!--</template>-->
+    <template is="dom-repeat" items="{{items}}">
+      <span>{{getDate(index)}}</span> <b>{{getName(index)}}</b>:Yo!
+  </template>
     <paper-button label="get" on-click="getData"></paper-button>
   </template>
 
@@ -82,17 +80,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 //            var data = getAll("http://localhost:8085/api/msg?from="+this.last);
 //            console.log(data);
         },
-        getData:function (e) {
-          var db = firebase.database().ref().child("Messages");
+        ready:function () {
+            var self = this;
+            var messaging = firebase.messaging();
+           /// console.log(messaging.requestPermission().getToken());
+            var db = firebase.database().ref("Messages").orderByKey();//для того чтобы перебирать выгружает все данные
             db.once("value")
                 .then(function(snapshot) {
-                    var cond = snapshot.hasChildren();//lima
-                    if (cond){
-                        var date = snapshot.child("mes1").child("date").val(); // {first:"Ada",last:"Lovelace"}
-                        var user = snapshot.child("mes1").child("user").val(); // "Lovelace"
-                    }
+                    snapshot.forEach(function(childSnapshot) {
+                        var key = childSnapshot.key; // "ada"
+                        if (childSnapshot.hasChildren())
+                        {
+                            var date = snapshot.child("mes1").child("date").val();
+                            var user = snapshot.child("mes1").child("user").val();
+                            var jsonObject = {
+                                date:date,
+                                user:user
+                            }
+                            self.items.push(jsonObject);
+                        }
+                        else return true;// закончить парсинг
+                    });
                 });
-          var a = 5;
+            var a = 5;
+        },
+        getDate(index){
+            return this.items[index].date;
+        },
+        getUser(index){
+            return this.items[index].user;
+        },
+        getData:function (e) {
            // sendMessaage(null,"ws://"+host+":"+serverPort+"/api/msg?from="+this.last);
         }
 
